@@ -1,0 +1,18 @@
+rootProject.name = 'gmp-bootstrap'
+include 'customizations'
+include 'scripts'
+include 'scripts:sample-sub-module'
+
+final extDir = new File(rootDir, 'ext')
+if (extDir.exists()) {
+    extDir.eachDir { dir ->
+        if (new File(dir, 'build.gradle').exists()) {
+            logger.info('found ext module: ' + dir.name)
+            final String prjName = ':' + dir.name
+            logger.lifecycle('include ext project: ' + prjName)
+            include prjName
+            project(prjName).projectDir = dir
+            project(prjName).name = 'ext-' + dir.name
+        }
+    }
+}
