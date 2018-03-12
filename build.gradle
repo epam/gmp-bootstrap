@@ -41,11 +41,7 @@ allprojects {
         }
 
         maven {
-            url "https://touch.epm-esp.projects.epam.com/maven/esp-dev"
-        }
-
-        maven {
-            url "https://touch.epm-esp.projects.epam.com/maven/esp"
+            url "https://oss.sonatype.org/content/groups/staging"
         }
 
         maven {
@@ -122,6 +118,7 @@ dependencies {
     compile "org.eclipse.jetty:jetty-annotations:${jettyVersion}"
     compile "org.eclipse.jetty:apache-jsp:${jettyVersion}"*/
 }
+
 def rootBuildDir = buildDir
 
 tasks.withType(Jar) {

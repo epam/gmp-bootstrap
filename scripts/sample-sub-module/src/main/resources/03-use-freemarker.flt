@@ -1,0 +1,12 @@
+<table>
+<tr><td>key1</td><td>${key1}</td></tr>
+<tr><td>key2</td><td>${key2}</td></tr>
+</table>
+
+{
+    <#list key3 as key >
+    '${key?index}' : '${key}' <#if !key?is_last>,</#if>
+    </#list>
+}
+
+for more info about Freemarker visit http://freemarker.org/

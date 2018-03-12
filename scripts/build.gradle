@@ -1,0 +1,37 @@
+configure(subprojects) { subproject ->
+    if (!subproject.name.startsWith('ext-')) {
+
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+
+        sourceSets {
+            main {
+                groovy { exclude '*.groovy' }
+                java {}
+            }
+        }
+
+        dependencies {
+            compile project(':customizations')
+        }
+
+        task copyScripts(type: Copy) {
+            into "${rootProject.buildDir}/$outPath/$subproject.name"
+            from('src/main/groovy') {
+                include '*.groovy'
+                include '*.properties'
+            }
+        }
+
+        task copyToLib(type: Copy) {
+            into "${rootProject.buildDir}/$outPath/$subproject.name/lib"
+            from configurations.export
+        }
+
+        tasks.withType(Jar) {
+            destinationDir = file("${rootProject.buildDir}/$outPath/$subproject.name/lib")
+        }
+
+        jar.dependsOn copyScripts, copyToLib
+    }
+}

@@ -6,7 +6,7 @@ def gmp = rootProject.subprojects.find({
 def gmpTools = rootProject.subprojects.find({
     it.name == 'ext-gmp-tools'
 }) ? project(':ext-gmp-tools')
-        : "com.epam.dep.esp:atlassian-tools:$gmpToolsVersion"
+        : "com.epam.dep.esp:gmp-tools:$gmpToolsVersion"
 
 dependencies {
     compile gmp
