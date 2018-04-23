@@ -17,6 +17,8 @@
  * cmd line argument to start:
  * dev@sample-sub-module/03-use-freemarker.groovy
  */
+import com.google.common.collect.MultimapBuilder
+import com.google.common.collect.SetMultimap
 import org.slf4j.Logger
 
 /**
@@ -37,5 +39,21 @@ scriptLogger.info gConfig.global.variable.msg
 // !!!! groovy scripts returns the result of latest calculated value, so it is important to return 0
 // !!!! or anything else if you want to eliminate unexpected results
 //exit code = 0
+
+//search unique name/file entry for serverX
+ConfigObject servers = gConfig.servers
+SetMultimap<String, String> hostFilesMap = MultimapBuilder.hashKeys().hashSetValues().build();
+
+//iterate each server from configuration
+servers.each {
+    scriptLogger.info("server: $it.key file:$it.value.file")
+    //put into guava multimap
+    hostFilesMap.put(it.value.name,it.value.file)
+}
+
+//print unique name/file entry
+hostFilesMap.entries().each {
+    scriptLogger.info("name: $it.key file:$it.value")
+}
 
 return gConfig.varExitCode

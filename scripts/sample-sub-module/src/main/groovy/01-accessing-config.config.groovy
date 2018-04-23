@@ -15,3 +15,20 @@
 
 //configuration for test.groovy
 varExitCode = 0
+
+servers {
+    server1 {
+        name = 'name1'
+        file = 'file1'
+    }
+
+    server2 {
+        name = 'name2'
+        file = 'file2'
+    }
+
+    server3 {
+        name = 'name1'
+        file = 'file3'
+    }
+}
