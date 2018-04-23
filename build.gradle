@@ -69,7 +69,7 @@ sourceSets {
 }
 
 task copyScripts(type: Copy) {
-    into "$buildDir/$outPath/.."
+    into "$buildDir/$outPath/groovyRoot"
     from('src/main/groovy') {
         include '*.groovy'
         include '*.properties'

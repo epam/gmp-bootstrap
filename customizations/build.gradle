@@ -9,6 +9,7 @@ def gmpTools = rootProject.subprojects.find({
         : "com.epam.dep.esp:gmp-tools:$gmpToolsVersion"
 
 dependencies {
+    compile "com.epam.dep.esp:gmp-common:$gmpCommonVersion"
     compile gmp
     compile gmpTools
     compile(gmpTools) {
