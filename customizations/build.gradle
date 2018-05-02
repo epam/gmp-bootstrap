@@ -14,7 +14,7 @@ dependencies {
     compile gmpTools
     compile(gmpTools) {
         exclude group: 'org.codehaus.groovy', module: 'groovy-all'
-   }
+    }
     compile "org.json:json:$jsonVersion"
     compile "com.jcraft:jsch:$jschVersion"
 

@@ -14,3 +14,4 @@
  */
 
 global.variable.msg = 'This is a global variable from global-config.groovy'
+webUtils = WebHelperService

@@ -13,23 +13,9 @@
  *  ***************************************************************************
  */
 
-/*
- *  /***************************************************************************
- *  Copyright (c) 2017, EPAM SYSTEMS INC
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *     http://www.apache.org/licenses/LICENSE-2.0
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *  ***************************************************************************
- */
-
 package com.epam.gmp.config.custom;
 
+import com.epam.gmp.ScriptContextException;
 import com.epam.gmp.config.GMPConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,16 +38,15 @@ import java.io.File;
 @EnableAspectJAutoProxy
 public class CustomGmpConfig {
     public static final String GMP_GLOBAL_PROPERTIES = "gmp-global.properties";
-
-    private static String gmpHome = GMPConfig.gmpHome();
-    private final static Logger logger = LoggerFactory.getLogger(GMPConfig.class);
+    private static final String GMP_HOME = GMPConfig.gmpHome();
+    private static final Logger logger = LoggerFactory.getLogger(GMPConfig.class);
 
     @Bean(name = "GMPGlobalProperties")
     public static PropertySourcesPlaceholderConfigurer properties() {
         PropertySourcesPlaceholderConfigurer pspc = new PropertySourcesPlaceholderConfigurer();
         Resource[] resources;
-        if (gmpHome != null) {
-            File pesProperties = new File(gmpHome + File.pathSeparator + GMP_GLOBAL_PROPERTIES);
+        if (GMP_HOME != null) {
+            File pesProperties = new File(GMP_HOME + File.pathSeparator + GMP_GLOBAL_PROPERTIES);
             if (pesProperties.exists()) {
                 resources = new Resource[]{new FileSystemResource(pesProperties)};
                 logger.info("Loading config from file system...");
@@ -70,7 +55,7 @@ public class CustomGmpConfig {
                 resources = new ClassPathResource[]{new ClassPathResource(GMP_GLOBAL_PROPERTIES)};
             }
         } else {
-            throw new RuntimeException("gmp.home is not set!");
+            throw new ScriptContextException("gmp.home is not set!");
         }
         pspc.setLocations(resources);
         pspc.setIgnoreUnresolvablePlaceholders(true);
