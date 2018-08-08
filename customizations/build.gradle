@@ -13,13 +13,10 @@ dependencies {
     compile gmp
     compile gmpTools
     compile(gmpTools) {
-        exclude group: 'org.codehaus.groovy', module: 'groovy-all'
+        exclude group: 'org.codehaus.groovy', module: 'groovy'
     }
     compile "org.json:json:$jsonVersion"
     compile "com.jcraft:jsch:$jschVersion"
-
-//    compile "org.elasticsearch.client:transport:${elasticSearchVersion}"
-//    compile "org.elasticsearch.client:x-pack-transport:${elasticSearchVersion}"
 
     testCompile "org.spockframework:spock-core:1.1-groovy-2.4"
     testCompile group: 'junit', name: 'junit', version: jUnitVersion

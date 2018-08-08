@@ -1,0 +1,13 @@
+variables:
+  env:
+    name: "${env}"
+    docs: "/apps/doc"
+    sdl: "/apps/sdl"
+    jboss:
+      home: "/apps/"
+
+  services:
+    smtp:
+      host: "${env}.smtp.host"
+    image:
+      host: "${env}.image.host"

@@ -19,6 +19,7 @@ configure(subprojects) { subproject ->
             into "${rootProject.buildDir}/$outPath/$subproject.name"
             from('src/main/groovy') {
                 include '*.groovy'
+                include '*.yaml'
                 include '*.properties'
             }
         }
