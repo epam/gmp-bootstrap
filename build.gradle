@@ -73,6 +73,7 @@ apply plugin: 'org.sonarqube'
 sonarqube {
     properties {
         property "sonar.scm.disabled","true"
+        property "sonar.projectVersion","${-> tasks.computeProjectVersionForSonarScan.version()}"
     }
 }
 
@@ -165,3 +166,69 @@ jar {
 }
 
 jar.dependsOn copyScripts, copyToLib
+
+
+//Identifies current gin branch name. Drop build in case of failure
+task getGitCurrentBranch(type: Exec, group:'sonar') {
+    workingDir buildDir
+    commandLine 'git', 'rev-parse', '--abbrev-ref', 'HEAD'
+    standardOutput = new ByteArrayOutputStream()
+    ext.output = {
+        return standardOutput.toString().trim()
+    }
+    ext.exitCode = {
+        return execResult
+    }
+}
+
+/*
+    Get git tag to be used as project version for SonarQube scan
+*/
+task getGitTag(type: Exec, dependsOn: 'getGitCurrentBranch', group:'sonar') {
+
+    def branch
+
+    doLast {
+        branch = tasks.getGitCurrentBranch.output()
+        println "branch=$branch"
+    }
+
+    workingDir buildDir
+    commandLine 'git', 'describe', '--tag', '--match', "SNR-${branch}*", '--abbrev=0'
+    standardOutput = new ByteArrayOutputStream()
+
+    ext.output = {
+        return standardOutput.toString().trim()
+    }
+
+    ext.exitCode = {
+        return execResult
+    }
+    ignoreExitValue true
+}
+
+task computeProjectVersionForSonarScan(dependsOn: 'getGitTag', group:'sonar') {
+    doLast {
+        def tag = tasks.getGitTag.output()
+        println "tag found: $tag"
+        def exitCode=tasks.getGitTag.exitCode()
+        println "exit code: $exitCode.exitValue"
+        def branch = tasks.getGitCurrentBranch.output()
+        ext.version = {
+            def result
+            if (exitCode.exitValue ==0 ) {
+                result = tag
+            } else result = project.version+"-snapshot"
+            println "version to be used: $result"
+            return result
+        }
+    }
+}
+
+task printSonarVersion(dependsOn: 'computeProjectVersionForSonarScan', group:'sonar') {
+    doLast {
+        println "$tasks.computeProjectVersionForSonarScan.version"
+    }
+}
+
+project.tasks["sonarqube"].dependsOn computeProjectVersionForSonarScan

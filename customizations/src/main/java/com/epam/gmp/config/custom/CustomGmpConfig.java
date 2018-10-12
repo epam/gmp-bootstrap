@@ -15,7 +15,9 @@
 
 package com.epam.gmp.config.custom;
 
+import com.epam.gmp.GmpResourceUtils;
 import com.epam.gmp.ScriptContextException;
+import com.epam.gmp.ScriptInitializationException;
 import com.epam.gmp.config.GMPConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,11 +26,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-
-import java.io.File;
 
 /**
  * This is an optional class to demonstrate how to create custom Spring Beans.
@@ -37,25 +35,20 @@ import java.io.File;
 @Configuration
 @EnableAspectJAutoProxy
 public class CustomGmpConfig {
+    @javax.annotation.Resource(name = "gmpHomeResource")
+    Resource gmpHomeResource;
     public static final String GMP_GLOBAL_PROPERTIES = "gmp-global.properties";
-    private static final String GMP_HOME = GMPConfig.gmpHome();
+
     private static final Logger logger = LoggerFactory.getLogger(GMPConfig.class);
 
     @Bean(name = "GMPGlobalProperties")
-    public static PropertySourcesPlaceholderConfigurer properties() {
+    public PropertySourcesPlaceholderConfigurer properties() {
         PropertySourcesPlaceholderConfigurer pspc = new PropertySourcesPlaceholderConfigurer();
         Resource[] resources;
-        if (GMP_HOME != null) {
-            File pesProperties = new File(GMP_HOME + File.pathSeparator + GMP_GLOBAL_PROPERTIES);
-            if (pesProperties.exists()) {
-                resources = new Resource[]{new FileSystemResource(pesProperties)};
-                logger.info("Loading config from file system...");
-            } else {
-                logger.info("Loading config from classpath...");
-                resources = new ClassPathResource[]{new ClassPathResource(GMP_GLOBAL_PROPERTIES)};
-            }
-        } else {
-            throw new ScriptContextException("gmp.home is not set!");
+        try {
+            resources = new Resource[]{GmpResourceUtils.getRelativeResource(gmpHomeResource, GMP_GLOBAL_PROPERTIES)};
+        } catch (ScriptInitializationException e) {
+            throw new ScriptContextException("Unable to initialize " + GMP_GLOBAL_PROPERTIES, e);
         }
         pspc.setLocations(resources);
         pspc.setIgnoreUnresolvablePlaceholders(true);
