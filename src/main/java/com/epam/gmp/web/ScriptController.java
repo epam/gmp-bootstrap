@@ -53,12 +53,9 @@ public class ScriptController {
     public
     @ResponseBody
     Object apiRunScript(@Valid @RequestBody Script script, BindingResult bindingResult) throws ExecutionException, InterruptedException {
-
         if (bindingResult.hasErrors()) {
             throw new InvalidRequestException("Invalid Script", bindingResult);
         }
-
-        Long start = System.currentTimeMillis();
         Future<ScriptResult<Object>> result = processService.execute(GroovyThread.class, script.getName(), script.getParams());
         return result.get();
     }
