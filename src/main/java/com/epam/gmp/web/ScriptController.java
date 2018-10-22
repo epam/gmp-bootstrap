@@ -16,6 +16,7 @@
 
 package com.epam.gmp.web;
 
+import com.epam.gmp.ScriptResult;
 import com.epam.gmp.process.GroovyThread;
 import com.epam.gmp.process.QueuedProcessService;
 import com.epam.gmp.web.dto.Script;
@@ -26,6 +27,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 @RestController
 public class ScriptController {
@@ -44,5 +47,19 @@ public class ScriptController {
         Long start = System.currentTimeMillis();
         processService.execute(GroovyThread.class, script.getName(), script.getParams());
         return "Job has been triggered " + (System.currentTimeMillis() - start);
+    }
+
+    @RequestMapping(value = "/api/run", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public
+    @ResponseBody
+    Object apiRunScript(@Valid @RequestBody Script script, BindingResult bindingResult) throws ExecutionException, InterruptedException {
+
+        if (bindingResult.hasErrors()) {
+            throw new InvalidRequestException("Invalid Script", bindingResult);
+        }
+
+        Long start = System.currentTimeMillis();
+        Future<ScriptResult<Object>> result = processService.execute(GroovyThread.class, script.getName(), script.getParams());
+        return result.get();
     }
 }

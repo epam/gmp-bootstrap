@@ -87,6 +87,10 @@ dependencyCheck {
     }
 }
 
+configurations.all {
+    resolutionStrategy.cacheDynamicVersionsFor 10, 'minutes'
+}
+
 task copyToLib(type: Copy) {
     into "$buildDir/$outPath/../lib"
     from configurations.compile
