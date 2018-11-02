@@ -26,6 +26,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
 /**
@@ -42,14 +43,10 @@ public class CustomGmpConfig {
     private static final Logger logger = LoggerFactory.getLogger(GMPConfig.class);
 
     @Bean(name = "GMPGlobalProperties")
-    public PropertySourcesPlaceholderConfigurer properties() {
+    public static PropertySourcesPlaceholderConfigurer properties() {
         PropertySourcesPlaceholderConfigurer pspc = new PropertySourcesPlaceholderConfigurer();
         Resource[] resources;
-        try {
-            resources = new Resource[]{GmpResourceUtils.getRelativeResource(gmpHomeResource, GMP_GLOBAL_PROPERTIES)};
-        } catch (ScriptInitializationException e) {
-            throw new ScriptContextException("Unable to initialize " + GMP_GLOBAL_PROPERTIES, e);
-        }
+        resources = new Resource[]{new ClassPathResource(GMP_GLOBAL_PROPERTIES)};
         pspc.setLocations(resources);
         pspc.setIgnoreUnresolvablePlaceholders(true);
         pspc.setIgnoreResourceNotFound(true);
