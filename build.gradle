@@ -72,8 +72,8 @@ buildscript {
 apply plugin: 'org.sonarqube'
 sonarqube {
     properties {
-        property "sonar.scm.disabled","true"
-        property "sonar.projectVersion","${-> tasks.computeProjectVersionForSonarScan.version()}"
+        property "sonar.scm.disabled", "true"
+        property "sonar.projectVersion", "${-> tasks.computeProjectVersionForSonarScan.version()}"
     }
 }
 
@@ -134,7 +134,7 @@ dependencies {
 
     if (buildWarArtifact) {
         compile "org.springframework:spring-webmvc:${springVersion}"
-        compile "org.springframework.security:spring-security-web:4.2.3.RELEASE"
+        compile "org.springframework.security:spring-security-web:${springVersion}"
         compile "org.hibernate:hibernate-validator:4.3.1.Final"
         compile "org.springframework:spring-context:${springVersion}"
         //-- JSTL --
@@ -144,10 +144,10 @@ dependencies {
         testCompile "org.springframework:spring-aspects:${springVersion}"
     }
 
-    testCompile "org.spockframework:spock-core:1.1-groovy-2.4"
+    testCompile 'org.spockframework:spock-core:2.0-groovy-3.0'
     testCompile group: 'junit', name: 'junit', version: jUnitVersion
 
-    compile "org.apache.commons:commons-compress:1.15"
+    compile 'org.apache.commons:commons-compress:1.21'
     /*   compile "org.eclipse.jetty:jetty-server:${jettyVersion}"
     compile "org.eclipse.jetty:jetty-webapp:${jettyVersion}"
     compile "org.eclipse.jetty:jetty-annotations:${jettyVersion}"
@@ -173,7 +173,7 @@ jar.dependsOn copyScripts, copyToLib
 
 
 //Identifies current gin branch name. Drop build in case of failure
-task getGitCurrentBranch(type: Exec, group:'sonar') {
+task getGitCurrentBranch(type: Exec, group: 'sonar') {
     workingDir buildDir
     commandLine 'git', 'rev-parse', '--abbrev-ref', 'HEAD'
     standardOutput = new ByteArrayOutputStream()
@@ -188,7 +188,7 @@ task getGitCurrentBranch(type: Exec, group:'sonar') {
 /*
     Get git tag to be used as project version for SonarQube scan
 */
-task getGitTag(type: Exec, dependsOn: 'getGitCurrentBranch', group:'sonar') {
+task getGitTag(type: Exec, dependsOn: 'getGitCurrentBranch', group: 'sonar') {
 
     def branch
 
@@ -211,25 +211,25 @@ task getGitTag(type: Exec, dependsOn: 'getGitCurrentBranch', group:'sonar') {
     ignoreExitValue true
 }
 
-task computeProjectVersionForSonarScan(dependsOn: 'getGitTag', group:'sonar') {
+task computeProjectVersionForSonarScan(dependsOn: 'getGitTag', group: 'sonar') {
     doLast {
         def tag = tasks.getGitTag.output()
         println "tag found: $tag"
-        def exitCode=tasks.getGitTag.exitCode()
+        def exitCode = tasks.getGitTag.exitCode()
         println "exit code: $exitCode.exitValue"
         def branch = tasks.getGitCurrentBranch.output()
         ext.version = {
             def result
-            if (exitCode.exitValue ==0 ) {
+            if (exitCode.exitValue == 0) {
                 result = tag
-            } else result = project.version+"-snapshot"
+            } else result = project.version + "-snapshot"
             println "version to be used: $result"
             return result
         }
     }
 }
 
-task printSonarVersion(dependsOn: 'computeProjectVersionForSonarScan', group:'sonar') {
+task printSonarVersion(dependsOn: 'computeProjectVersionForSonarScan', group: 'sonar') {
     doLast {
         println "$tasks.computeProjectVersionForSonarScan.version"
     }
