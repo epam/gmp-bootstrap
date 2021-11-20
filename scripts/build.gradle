@@ -12,7 +12,7 @@ configure(subprojects) { subproject ->
         }
 
         dependencies {
-            compile project(':customizations')
+            implementation project(':customizations')
         }
 
         task copyScripts(type: Copy) {
@@ -30,7 +30,7 @@ configure(subprojects) { subproject ->
         }
 
         tasks.withType(Jar) {
-            destinationDir = file("${rootProject.buildDir}/$outPath/$subproject.name/lib")
+            destinationDirectory = file("${rootProject.buildDir}/$outPath/$subproject.name/lib")
         }
 
         jar.dependsOn copyScripts, copyToLib
