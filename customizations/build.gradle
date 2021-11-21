@@ -9,14 +9,14 @@ def gmpTools = rootProject.subprojects.find({
         : "com.epam.dep.esp:gmp-tools:$gmpToolsVersion"
 
 dependencies {
-    implementation  gmp
-    implementation  gmpTools
-    implementation (gmpTools) {
+    api  gmp
+    api  gmpTools
+    api (gmpTools) {
         exclude group: 'org.codehaus.groovy', module: 'groovy'
     }
-    implementation  "org.json:json:$jsonVersion"
-    implementation  "com.jcraft:jsch:$jschVersion"
-    implementation group: 'javax.annotation', name: 'javax.annotation-api', version: '1.3.2'
+    api  "org.json:json:$jsonVersion"
+    api  "com.jcraft:jsch:$jschVersion"
+    api group: 'javax.annotation', name: 'javax.annotation-api', version: '1.3.2'
 
     testImplementation  'org.spockframework:spock-core:2.0-groovy-3.0'
     testImplementation  group: 'junit', name: 'junit', version: jUnitVersion

@@ -19,7 +19,7 @@ repositories {
 }
 
 //Add custom dependency here
-// "compile" lever dependency is used for compile only
+// "implementation" lever dependency is used for compile only
 // "export" lever dependency is used for compile and will be placed to /lib folder
 /*dependencies {
 

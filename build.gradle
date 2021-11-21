@@ -18,7 +18,10 @@ allprojects {
     version version
 
     apply plugin: 'groovy'
-    apply plugin: 'java'
+    apply plugin: 'java-library'
+
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 
     repositories {
         mavenLocal()
@@ -50,8 +53,7 @@ allprojects {
     }
 
     configurations {
-        implementation
-        runtime
+        implementation.extendsFrom export
         export
         lib.extendsFrom implementation
     }

@@ -1,9 +1,6 @@
 configure(subprojects) { subproject ->
     if (!subproject.name.startsWith('ext-')) {
 
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-
         sourceSets {
             main {
                 groovy { exclude '*.groovy' }
